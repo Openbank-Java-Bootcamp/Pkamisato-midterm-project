@@ -1,8 +1,13 @@
 package com.ironhack.openbank_project.utils;
+import jakarta.persistence.Embeddable;
+
 import java.math.RoundingMode;
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Objects;
 
+
+@Embeddable
 public class Money {
 
     private static final Currency USD = Currency.getInstance("USD");
@@ -69,4 +74,5 @@ public class Money {
     public String toString() {
         return getCurrency().getSymbol() + " " + getAmount();
     }
+
 }

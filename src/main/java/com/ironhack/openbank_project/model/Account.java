@@ -28,27 +28,55 @@ public abstract  class Account {
     @NotNull
     private String secretKey;
     @NotNull
-    private Money balance;
-    @NotNull
-    private String primaryOwner;
 
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "currency", column = @Column(name = "Balance_fee_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "Balance_fee_amount")),
+    })
+    private Money balance;
+
+    @NotNull
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "currency", column = @Column(name = "Minimum_balance_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "Minimum_balance_amount")),
+    })
+    private Money minimumBalance;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name= "primaryOwner_id")
+    private User primaryOwner;
     private String secondaryOwner;
     @NotNull
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "currency", column = @Column(name = "Penalty_fee_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "Penalty_fee_amount")),
+    })
     private Money penaltyFee;
+
+    @NotNull
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "currency", column = @Column(name = "Monthly_maintenance_fee_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "Monthly_maintenance_fee_amount")),
+    })
+    private Money monthlyMaintenanceFee;
     @NotNull
     private Status status;
 
     private static final Money DEFAULT_PENALTY_FEE = new Money(new BigDecimal(40), Currency.getInstance("EUR"));
 
-    public Account(Date creationDate, String secretKey, Money balance, String primaryOwner, String secondaryOwner, Money penaltyFee, Status status) {
+    public Account(Date creationDate, String secretKey, Money balance, Money minimumBalance, User primaryOwner, String secondaryOwner, Money monthlyMaintenanceFee, Status status) {
         this.creationDate = creationDate;
         this.secretKey = secretKey;
         this.balance = balance;
+        this.minimumBalance = minimumBalance;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
-        this.penaltyFee = DEFAULT_PENALTY_FEE;
+        this.penaltyFee = DEFAULT_PENALTY_FEE ;
+        this.monthlyMaintenanceFee = monthlyMaintenanceFee;
         this.status = status;
     }
-
-
 }

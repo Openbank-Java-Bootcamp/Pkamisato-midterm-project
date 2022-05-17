@@ -2,9 +2,11 @@ package com.ironhack.openbank_project.utils;
 
 
 import com.sun.istack.NotNull;
+import jakarta.persistence.Embeddable;
 
 import java.util.Objects;
 
+@Embeddable
 public class Address {
 
     @NotNull
