@@ -9,24 +9,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Currency;
-import java.util.Date;
-
-import static org.aspectj.runtime.internal.Conversions.intValue;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract  class Account {
+public abstract class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
-    private Date creationDate;
-
+    private LocalDate creationDate;
     @NotNull
     private String secretKey;
     @NotNull
@@ -47,12 +44,12 @@ public abstract  class Account {
     private Money minimumBalance;
     @NotNull
     @ManyToOne
-    @JoinColumn(name= "primaryOwner_id")
+    @JoinColumn(name = "primaryOwner_id")
     private AccountHolder primaryOwner;
 
 
     @ManyToOne
-    @JoinColumn(name= "secondaryOwner_id")
+    @JoinColumn(name = "secondaryOwner_id")
     private AccountHolder secondaryOwner;
     @NotNull
     @Embedded
@@ -74,24 +71,38 @@ public abstract  class Account {
 
     private static final Money DEFAULT_PENALTY_FEE = new Money(new BigDecimal(40), Currency.getInstance("EUR"));
 
-    public Account(Date creationDate, String secretKey, Money balance, Money minimumBalance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money monthlyMaintenanceFee, Status status) {
-        this.creationDate = creationDate;
+    public Account(LocalDate creationDate, String secretKey, Money balance, Money minimumBalance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money monthlyMaintenanceFee, Status status) {
+        this.creationDate = LocalDate.now();
         this.secretKey = secretKey;
         this.balance = balance;
         this.minimumBalance = minimumBalance;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
-        this.penaltyFee = DEFAULT_PENALTY_FEE ;
+        this.penaltyFee = DEFAULT_PENALTY_FEE;
         this.monthlyMaintenanceFee = monthlyMaintenanceFee;
         this.status = status;
     }
 
-    public void setBalance(Money balance) {
-        if(intValue(balance.getAmount()) < intValue(minimumBalance.getAmount())){
+    public void applyPenaltyFee(Money balance) {
+        if (minimumBalance.getAmount().compareTo(balance.getAmount()) > 0) {
             this.balance.decreaseAmount(penaltyFee.getAmount());
-        }else{
+        } else {
             this.balance = balance;
         }
+    }
+
+    public abstract void addInterestRate();
+
+    public void sendTransfer(Money transferAmount) {
+        if (balance.getAmount().compareTo(transferAmount.getAmount()) >= 0) {
+            BigDecimal newBalanceAmount = balance.getAmount().subtract(transferAmount.getAmount());
+            Money newBalance = new Money(newBalanceAmount, Currency.getInstance("EUR"));
+        }
+    }
+
+    public void receiveTransfer(Money transferAmount) {
+        BigDecimal newBalanceAmount = balance.getAmount().add(transferAmount.getAmount());
+        Money newBalance = new Money(newBalanceAmount, Currency.getInstance("EUR"));
     }
 
 

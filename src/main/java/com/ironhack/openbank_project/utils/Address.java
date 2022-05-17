@@ -17,8 +17,10 @@ public class Address {
     private String city;
     @NotNull
     private String country;
-    @NotNull
+
     private int postCode;
+    private final static int DEFAULT_POT_CODE= 28001;
+
 
     public Address() {
     }
@@ -28,7 +30,7 @@ public class Address {
         this.streetNumber = streetNumber;
         this.city = city;
         this.country = country;
-        this.postCode = postCode;
+        this.postCode = DEFAULT_POT_CODE;
     }
 
 

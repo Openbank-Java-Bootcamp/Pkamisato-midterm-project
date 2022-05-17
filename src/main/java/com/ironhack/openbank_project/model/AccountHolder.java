@@ -29,7 +29,7 @@ public class AccountHolder extends User{
             @AttributeOverride(name = "streetNumber", column = @Column(name = "AccountHolders_address_Street_number")),
             @AttributeOverride(name = "city", column = @Column(name = "AccountHolders_address_city")),
             @AttributeOverride(name = "country", column = @Column(name = "AccountHolders_address_country")),
-            @AttributeOverride(name = "postalCode", column = @Column(name = "AccountHolders_address_postalCode"))
+            @AttributeOverride(name = "postCode", column = @Column(name = "AccountHolders_address_postalCode"))
     })
     private Address address;
 
