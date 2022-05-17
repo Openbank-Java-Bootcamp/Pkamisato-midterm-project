@@ -17,7 +17,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountHolders extends User{
+public class AccountHolder extends User{
+
 
     @NotNull
     private Date dateOfBirth;

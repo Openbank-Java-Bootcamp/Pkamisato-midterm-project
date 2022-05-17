@@ -32,7 +32,7 @@ public class Savings extends Account{
     private static final Money MIN_MINIMUM_BALANCE = new Money(new BigDecimal(100),getInstance("EUR"));
 
 
-    public Savings(Date creationDate, String secretKey, Money balance, Money minimumBalance, User primaryOwner, String secondaryOwner, Money monthlyMaintenanceFee, Status status, BigDecimal interestRate) {
+    public Savings(Date creationDate, String secretKey, Money balance, Money minimumBalance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money monthlyMaintenanceFee, Status status, BigDecimal interestRate) {
         super(creationDate, secretKey, balance, minimumBalance = DEFAULT_MINIMUM_BALANCE, primaryOwner, secondaryOwner, monthlyMaintenanceFee = DEFAULT_MONTHLY_MAINTENANCE_FEE, status);
         this.interestRate = DEFAULT_INTEREST_RATE;
     }
@@ -51,4 +51,8 @@ public class Savings extends Account{
            setMinimumBalance(minimumBalance);
        }
     }
+
+
+
+
 }

@@ -40,7 +40,7 @@ public class CreditCard extends Account{
     @Embedded
     private static final Money MAX_CREDIT_LIMIT = new Money(new BigDecimal(100000),getInstance("EUR"));
 
-    public CreditCard(Date creationDate, String secretKey, Money balance, Money minimumBalance, User primaryOwner, String secondaryOwner, Money monthlyMaintenanceFee, Status status, Money creditLimit, BigDecimal interestRate) {
+    public CreditCard(Date creationDate, String secretKey, Money balance, Money minimumBalance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money monthlyMaintenanceFee, Status status, Money creditLimit, BigDecimal interestRate) {
         super(creationDate, secretKey, balance, minimumBalance = DEFAULT_MINIMUM_BALANCE , primaryOwner, secondaryOwner, monthlyMaintenanceFee = DEFAULT_MONTHLY_MAINTENANCE_FEE , status);
         this.creditLimit = DEFAULT_CREDIT_LIMIT;
         this.interestRate = DEFAULT_INTEREST_RATE;

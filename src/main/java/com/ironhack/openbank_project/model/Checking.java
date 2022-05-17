@@ -21,7 +21,7 @@ public class Checking extends Account{
     @Embedded
     private static final Money MIN_MINIMUM_BALANCE = new Money(new BigDecimal(250), Currency.getInstance("EUR"));
 
-    public Checking(Date creationDate, String secretKey, Money balance, Money minimumBalance, User primaryOwner, String secondaryOwner, Money monthlyMaintenanceFee, Status status) {
+    public Checking(Date creationDate, String secretKey, Money balance, Money minimumBalance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money monthlyMaintenanceFee, Status status) {
         super(creationDate, secretKey, balance, minimumBalance = MIN_MINIMUM_BALANCE , primaryOwner, secondaryOwner, monthlyMaintenanceFee =DEFAULT_MONTHLY_MAINTENANCE_FEE , status);
     }
 

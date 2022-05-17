@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Date;
 
+import static org.aspectj.runtime.internal.Conversions.intValue;
+
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Data
@@ -46,8 +48,12 @@ public abstract  class Account {
     @NotNull
     @ManyToOne
     @JoinColumn(name= "primaryOwner_id")
-    private User primaryOwner;
-    private String secondaryOwner;
+    private AccountHolder primaryOwner;
+
+
+    @ManyToOne
+    @JoinColumn(name= "secondaryOwner_id")
+    private AccountHolder secondaryOwner;
     @NotNull
     @Embedded
     @AttributeOverrides({
@@ -68,7 +74,7 @@ public abstract  class Account {
 
     private static final Money DEFAULT_PENALTY_FEE = new Money(new BigDecimal(40), Currency.getInstance("EUR"));
 
-    public Account(Date creationDate, String secretKey, Money balance, Money minimumBalance, User primaryOwner, String secondaryOwner, Money monthlyMaintenanceFee, Status status) {
+    public Account(Date creationDate, String secretKey, Money balance, Money minimumBalance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money monthlyMaintenanceFee, Status status) {
         this.creationDate = creationDate;
         this.secretKey = secretKey;
         this.balance = balance;
@@ -79,4 +85,14 @@ public abstract  class Account {
         this.monthlyMaintenanceFee = monthlyMaintenanceFee;
         this.status = status;
     }
+
+    public void setBalance(Money balance) {
+        if(intValue(balance.getAmount()) < intValue(minimumBalance.getAmount())){
+            this.balance.decreaseAmount(penaltyFee.getAmount());
+        }else{
+            this.balance = balance;
+        }
+    }
+
+
 }
