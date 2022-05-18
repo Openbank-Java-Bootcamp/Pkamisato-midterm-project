@@ -23,12 +23,12 @@ public class UserController implements UserControllerInterface {
         return userService.getUsers();
     }
 
+
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public void saveUser(@RequestBody User user){
         userService.saveUser(user);
     }
-
 
 
 }

@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Currency;
 
 
 import static java.util.Currency.getInstance;
@@ -22,11 +21,23 @@ import static org.aspectj.runtime.internal.Conversions.intValue;
 public class Savings extends Account{
 
     @NotNull
+    private String secretKey;
+
+    @NotNull
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "currency", column = @Column(name = "Minimum_balance_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "Minimum_balance_amount")),
+    })
+    private Money minimumBalance;
+
+    @NotNull
     private BigDecimal interestRate;
+    @NotNull
+    private Status status;
 
     private int interestRateCounter = 0;
 
-    private static final Money DEFAULT_MONTHLY_MAINTENANCE_FEE = new Money(new BigDecimal(0), Currency.getInstance("EUR"));
     private static final BigDecimal DEFAULT_INTEREST_RATE = new BigDecimal(0.0025);
     private static final BigDecimal MAX_INTEREST_RATE = new BigDecimal(0.5);
 
@@ -35,16 +46,30 @@ public class Savings extends Account{
     private static final Money MIN_MINIMUM_BALANCE = new Money(new BigDecimal(100),getInstance("EUR"));
 
 
-    public Savings(LocalDate creationDate, String secretKey, Money balance, Money minimumBalance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money monthlyMaintenanceFee, Status status, BigDecimal interestRate) {
-        super(creationDate, secretKey, balance, minimumBalance = DEFAULT_MINIMUM_BALANCE, primaryOwner, secondaryOwner, monthlyMaintenanceFee = DEFAULT_MONTHLY_MAINTENANCE_FEE, status);
-        this.interestRate = DEFAULT_INTEREST_RATE;
+    public Savings(LocalDate creationDate, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money penaltyFee, String secretKey, Money minimumBalance, BigDecimal interestRate, Status status) {
+        super(creationDate, balance, primaryOwner, secondaryOwner, penaltyFee);
+        this.secretKey = secretKey;
+        this.minimumBalance = DEFAULT_MINIMUM_BALANCE;
+        this.interestRate =  DEFAULT_INTEREST_RATE;
+        this.status = status;
     }
+
     public void setInterestRate(BigDecimal interestRate) {
        if(MAX_INTEREST_RATE.compareTo(interestRate) > 0){
            this.interestRate = interestRate;
        }else{
            System.err.println("Insert Interest rate Between 0.0025 and 0.5 ");
        }
+    }
+
+    public void applyPenaltyFee(Money balance) {
+        if (minimumBalance.getAmount().compareTo(balance.getAmount()) > 0) {
+            BigDecimal newBalanceAmount = balance.decreaseAmount(getPenaltyFee().getAmount());
+            Money newBalance = new Money(newBalanceAmount,getInstance("EUR"));
+            super.setBalance(newBalance);
+        } else {
+            super.setBalance(balance);
+        }
     }
 
     public void setMinimumBalance(Money minimumBalance) {
@@ -55,8 +80,6 @@ public class Savings extends Account{
        }
     }
 
-
-    @Override
     public void addInterestRate(){
         LocalDate actualDate = LocalDate.now();
         Period period = Period.between(actualDate, getCreationDate());

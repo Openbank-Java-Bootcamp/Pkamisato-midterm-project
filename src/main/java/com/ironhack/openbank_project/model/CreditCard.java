@@ -1,6 +1,5 @@
 package com.ironhack.openbank_project.model;
 
-import com.ironhack.openbank_project.enums.Status;
 import com.ironhack.openbank_project.utils.Money;
 import com.sun.istack.NotNull;
 import jakarta.persistence.*;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Currency;
 
 import static java.util.Currency.getInstance;
 
@@ -31,11 +29,6 @@ public class CreditCard extends Account{
     private BigDecimal interestRate;
 
     private int interestRateCounter = 0;
-    @Embedded
-    private static final Money DEFAULT_MINIMUM_BALANCE = new Money(new BigDecimal(0), Currency.getInstance("EUR"));
-
-    @Embedded
-    private static final Money DEFAULT_MONTHLY_MAINTENANCE_FEE = new Money(new BigDecimal(0), Currency.getInstance("EUR"));
 
     private static final BigDecimal DEFAULT_INTEREST_RATE = new BigDecimal(0.2);
 
@@ -45,8 +38,8 @@ public class CreditCard extends Account{
     @Embedded
     private static final Money MAX_CREDIT_LIMIT = new Money(new BigDecimal(100000),getInstance("EUR"));
 
-    public CreditCard(LocalDate creationDate, String secretKey, Money balance, Money minimumBalance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money monthlyMaintenanceFee, Status status, Money creditLimit, BigDecimal interestRate) {
-        super(creationDate, secretKey, balance, minimumBalance = DEFAULT_MINIMUM_BALANCE , primaryOwner, secondaryOwner, monthlyMaintenanceFee = DEFAULT_MONTHLY_MAINTENANCE_FEE , status);
+    public CreditCard(LocalDate creationDate, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money penaltyFee, Money creditLimit, BigDecimal interestRate) {
+        super(creationDate, balance, primaryOwner, secondaryOwner, penaltyFee);
         this.creditLimit = DEFAULT_CREDIT_LIMIT;
         this.interestRate = DEFAULT_INTEREST_RATE;
     }
@@ -67,7 +60,6 @@ public class CreditCard extends Account{
         }
     }
 
-    @Override
     public void addInterestRate(){
         LocalDate actualDate = LocalDate.now();
         Period period = Period.between(actualDate, getCreationDate());

@@ -8,8 +8,4 @@ public interface UserServiceInterface {
     User saveUser(User user);
     List<User> getUsers();
 
-
-
-
-
 }

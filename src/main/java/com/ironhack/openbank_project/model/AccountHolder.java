@@ -8,7 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +23,7 @@ public class AccountHolder extends User{
 
 
     @NotNull
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     @NotNull
     @Embedded
     @AttributeOverrides({
@@ -39,4 +41,10 @@ public class AccountHolder extends User{
     @OneToMany(mappedBy = "primaryOwner")
     List<Account> accountList = new ArrayList<>();
 
+    public AccountHolder(String name, String username, String password, Collection<Role> roles, LocalDate dateOfBirth, Address address, String mailingAddress) {
+        super(name, username, password, roles);
+        this.dateOfBirth = dateOfBirth;
+        this.address = address;
+        this.mailingAddress = mailingAddress;
+    }
 }

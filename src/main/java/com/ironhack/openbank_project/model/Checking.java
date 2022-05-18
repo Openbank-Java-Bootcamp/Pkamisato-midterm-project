@@ -3,6 +3,7 @@ package com.ironhack.openbank_project.model;
 
 import com.ironhack.openbank_project.enums.Status;
 import com.ironhack.openbank_project.utils.Money;
+import com.sun.istack.NotNull;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,26 @@ import static java.util.Currency.getInstance;
 @Data
 @NoArgsConstructor
 public class Checking extends Account{
+
+    @NotNull
+    private String secretKey;
+
+    @NotNull
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "currency", column = @Column(name = "Minimum_balance_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "Minimum_balance_amount")),
+    })
+    private Money minimumBalance;
+    @NotNull
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "currency", column = @Column(name = "Monthly_maintenance_fee_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "Monthly_maintenance_fee_amount")),
+    })
+    private Money monthlyMaintenanceFee;
+    @NotNull
+    private Status status;
     @Embedded
     private static final Money DEFAULT_MONTHLY_MAINTENANCE_FEE = new Money(new BigDecimal(12), Currency.getInstance("EUR"));
     @Embedded
@@ -25,13 +46,12 @@ public class Checking extends Account{
 
     private int MaintenanceFeeCounter = 0;
 
-    public Checking(LocalDate creationDate, String secretKey, Money balance, Money minimumBalance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money monthlyMaintenanceFee, Status status) {
-        super(creationDate, secretKey, balance, minimumBalance = MIN_MINIMUM_BALANCE , primaryOwner, secondaryOwner, monthlyMaintenanceFee =DEFAULT_MONTHLY_MAINTENANCE_FEE , status);
-    }
-
-    @Override
-    public void addInterestRate() {
-        throw new RuntimeException("Checking doesn't have interest rate");
+    public Checking(LocalDate creationDate, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money penaltyFee, String secretKey, Status status) {
+        super(creationDate, balance, primaryOwner, secondaryOwner, penaltyFee);
+        this.secretKey = secretKey;
+        this.minimumBalance = MIN_MINIMUM_BALANCE ;
+        this.monthlyMaintenanceFee = DEFAULT_MONTHLY_MAINTENANCE_FEE;
+        this.status = status;
     }
 
     public void deductMonthlyMaintenanceFee(Money balance, Money monthlyMaintenanceFee , LocalDate actualDate){
