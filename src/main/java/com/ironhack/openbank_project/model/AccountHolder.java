@@ -1,5 +1,6 @@
 package com.ironhack.openbank_project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ironhack.openbank_project.utils.Address;
 import com.sun.istack.NotNull;
 import jakarta.persistence.*;
@@ -39,6 +40,7 @@ public class AccountHolder extends User{
     private String mailingAddress;
 
     @OneToMany(mappedBy = "primaryOwner")
+    @JsonIgnore
     List<Account> accountList = new ArrayList<>();
 
     public AccountHolder(String name, String username, String password, Collection<Role> roles, LocalDate dateOfBirth, Address address, String mailingAddress) {

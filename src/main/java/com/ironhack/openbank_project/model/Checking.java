@@ -20,8 +20,6 @@ import static java.util.Currency.getInstance;
 @NoArgsConstructor
 public class Checking extends Account{
 
-    @NotNull
-    private String secretKey;
 
     @NotNull
     @Embedded
@@ -45,23 +43,23 @@ public class Checking extends Account{
     private static final Money MIN_MINIMUM_BALANCE = new Money(new BigDecimal(250), Currency.getInstance("EUR"));
 
     private int MaintenanceFeeCounter = 0;
+    private static final Status DEFAULT_STATUS = Status.ACTIVE;
 
-    public Checking(LocalDate creationDate, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money penaltyFee, String secretKey, Status status) {
-        super(creationDate, balance, primaryOwner, secondaryOwner, penaltyFee);
-        this.secretKey = secretKey;
+    public Checking(String secretKey, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+        super(secretKey, balance, primaryOwner, secondaryOwner);
         this.minimumBalance = MIN_MINIMUM_BALANCE ;
         this.monthlyMaintenanceFee = DEFAULT_MONTHLY_MAINTENANCE_FEE;
-        this.status = status;
+        this.status = DEFAULT_STATUS;
     }
 
-    public void deductMonthlyMaintenanceFee(Money balance, Money monthlyMaintenanceFee , LocalDate actualDate){
-        Period period = Period.between(actualDate, getCreationDate());
+    public void deductMonthlyMaintenanceFee(){
+        Period period = Period.between(LocalDate.now(), getCreationDate());
         int months = period.getMonths(); // number of months that have passed since the creation of the account
         // how many times maintenance fee has been paid
         int notPaidCounter = months - getMaintenanceFeeCounter();
         if(notPaidCounter != 0){
             BigDecimal totalMaintenanceFee = monthlyMaintenanceFee.getAmount().multiply(new BigDecimal(notPaidCounter));
-            BigDecimal newBalanceAmount = balance.decreaseAmount(totalMaintenanceFee);
+            BigDecimal newBalanceAmount = super.getBalance().decreaseAmount(totalMaintenanceFee);
             Money newBalance = new Money(newBalanceAmount,getInstance("EUR"));
             super.setBalance(newBalance);
             setMaintenanceFeeCounter(notPaidCounter);

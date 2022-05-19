@@ -15,15 +15,13 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 public class StudentChecking extends Account{
-
-    @NotNull
-    private String secretKey;
     @NotNull
     private Status status;
 
-    public StudentChecking(LocalDate creationDate, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money penaltyFee, String secretKey, Status status) {
-        super(creationDate, balance, primaryOwner, secondaryOwner, penaltyFee);
-        this.secretKey = secretKey;
-        this.status = status;
+    private static final Status DEFAULT_STATUS = Status.ACTIVE;
+
+    public StudentChecking(String secretKey, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+        super(secretKey, balance, primaryOwner, secondaryOwner);
+        this.status = DEFAULT_STATUS;
     }
 }

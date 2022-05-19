@@ -18,8 +18,6 @@ import static java.util.Currency.getInstance;
 public class CreditCard extends Account{
 
     @NotNull
-    private String secretKey;
-    @NotNull
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "currency", column = @Column(name = "Credit_limit_currency")),
@@ -40,13 +38,12 @@ public class CreditCard extends Account{
     @Embedded
     private static final Money MAX_CREDIT_LIMIT = new Money(new BigDecimal(100000),getInstance("EUR"));
 
-    public CreditCard(LocalDate creationDate, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money penaltyFee, String secretKey) {
-        super(creationDate, balance, primaryOwner, secondaryOwner, penaltyFee);
-        this.secretKey = secretKey;
+
+    public CreditCard(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey) {
+        super(secretKey,balance, primaryOwner, secondaryOwner);
         this.creditLimit = DEFAULT_CREDIT_LIMIT;
         this.interestRate = DEFAULT_INTEREST_RATE;
     }
-
 
     public void setCreditLimit(Money creditLimit) {
        if(MAX_CREDIT_LIMIT.getAmount().compareTo(creditLimit.getAmount()) >= 0){

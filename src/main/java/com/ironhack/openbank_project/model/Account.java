@@ -1,5 +1,6 @@
 package com.ironhack.openbank_project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ironhack.openbank_project.utils.Money;
 import com.sun.istack.NotNull;
 import jakarta.persistence.*;
@@ -22,6 +23,8 @@ public abstract class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    private String secretKey;
     @NotNull
     private LocalDate creationDate;
 
@@ -49,17 +52,18 @@ public abstract class Account {
             @AttributeOverride(name = "amount", column = @Column(name = "Penalty_fee_amount")),
     })
     private Money penaltyFee;
-
-
     private static final Money DEFAULT_PENALTY_FEE = new Money(new BigDecimal(40), Currency.getInstance("EUR"));
+    private static final LocalDate DEFAULT_CREATION_DATE = LocalDate.now();
 
-    public Account(LocalDate creationDate, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money penaltyFee) {
-        this.creationDate = creationDate;
+    public Account(String secretKey, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner ) {
+        this.secretKey = secretKey;
+        this.creationDate = DEFAULT_CREATION_DATE;
         this.balance = balance;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
         this.penaltyFee  = DEFAULT_PENALTY_FEE;;
     }
+
 
     public void sendTransfer(Money transferAmount) {
         if (balance.getAmount().compareTo(transferAmount.getAmount()) >= 0) {

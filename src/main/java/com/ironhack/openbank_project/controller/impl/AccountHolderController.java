@@ -1,5 +1,6 @@
 package com.ironhack.openbank_project.controller.impl;
 
+import com.ironhack.openbank_project.controller.interfaces.AccountHolderControllerInterface;
 import com.ironhack.openbank_project.model.AccountHolder;
 import com.ironhack.openbank_project.service.interfaces.AccountHolderServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-public class AccountHolderController {
+public class AccountHolderController implements AccountHolderControllerInterface {
 
     @Autowired
     AccountHolderServiceInterface accountHolderServiceInterface;

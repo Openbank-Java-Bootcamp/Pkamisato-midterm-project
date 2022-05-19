@@ -19,10 +19,6 @@ import static org.aspectj.runtime.internal.Conversions.intValue;
 @NoArgsConstructor
 @Data
 public class Savings extends Account{
-
-    @NotNull
-    private String secretKey;
-
     @NotNull
     @Embedded
     @AttributeOverrides({
@@ -45,14 +41,16 @@ public class Savings extends Account{
 
     private static final Money MIN_MINIMUM_BALANCE = new Money(new BigDecimal(100),getInstance("EUR"));
 
+    private static final Status DEFAULT_STATUS = Status.ACTIVE;
 
-    public Savings(LocalDate creationDate, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Money penaltyFee, String secretKey, Money minimumBalance, BigDecimal interestRate, Status status) {
-        super(creationDate, balance, primaryOwner, secondaryOwner, penaltyFee);
-        this.secretKey = secretKey;
+
+    public Savings(String secretKey, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+        super(secretKey, balance, primaryOwner, secondaryOwner);
         this.minimumBalance = DEFAULT_MINIMUM_BALANCE;
         this.interestRate =  DEFAULT_INTEREST_RATE;
-        this.status = status;
+        this.status = Status.FROZEN;
     }
+
 
     public void setInterestRate(BigDecimal interestRate) {
        if(MAX_INTEREST_RATE.compareTo(interestRate) > 0){
@@ -62,13 +60,11 @@ public class Savings extends Account{
        }
     }
 
-    public void applyPenaltyFee(Money balance) {
-        if (minimumBalance.getAmount().compareTo(balance.getAmount()) > 0) {
-            BigDecimal newBalanceAmount = balance.decreaseAmount(getPenaltyFee().getAmount());
+    public void applyPenaltyFee() {
+        if (minimumBalance.getAmount().compareTo(super.getBalance().getAmount()) > 0) {
+            BigDecimal newBalanceAmount = super.getBalance().decreaseAmount(getPenaltyFee().getAmount());
             Money newBalance = new Money(newBalanceAmount,getInstance("EUR"));
             super.setBalance(newBalance);
-        } else {
-            super.setBalance(balance);
         }
     }
 

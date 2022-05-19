@@ -1,12 +1,17 @@
 package com.ironhack.openbank_project.service.interfaces;
 
+import com.ironhack.openbank_project.DTO.NewCheckingDTO;
+import com.ironhack.openbank_project.model.Account;
 import com.ironhack.openbank_project.model.Checking;
+import com.ironhack.openbank_project.utils.Money;
 
 public interface CheckingServiceInterface {
-    Checking addChecking(Checking checking);
+    Account addChecking(NewCheckingDTO newCheckingDTO);
     Checking getCheckingById(Long id);
 
     Checking updateChecking(Long id, Checking checking);
 
     void deleteChecking(Long id);
+
+    Money getActualBalance(Long id);
 }

@@ -1,16 +1,19 @@
 package com.ironhack.openbank_project.controller.impl;
 
+import com.ironhack.openbank_project.controller.interfaces.CreditCardControllerInterface;
 import com.ironhack.openbank_project.model.CreditCard;
 import com.ironhack.openbank_project.service.interfaces.CreditCardServicesInterface;
+import com.ironhack.openbank_project.utils.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.math.BigDecimal;
+
 
 @RestController
 @RequestMapping("/api")
-public class CreditCardController {
+public class CreditCardController implements CreditCardControllerInterface{
 
     @Autowired
     CreditCardServicesInterface creditCardServicesInterface;
@@ -37,4 +40,20 @@ public class CreditCardController {
     public void deleteCreditCardAccount(@PathVariable (name = "id") Long id){
         creditCardServicesInterface.deleteCreditCard(id);
     }
+
+    @PatchMapping("/creditCardAccounts/creditLimit/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Money updateCreditLimit(@PathVariable (name = "id") Long id,@RequestBody Money newCreditLimit){
+        return creditCardServicesInterface.updateCreditLimit(id,newCreditLimit);
+    }
+
+    @PatchMapping("/creditCardAccounts/interestRate/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public BigDecimal updateInterestRate(@PathVariable (name = "id") Long id,@RequestBody BigDecimal newInterestRate){
+        return creditCardServicesInterface.updateInterestRate(id, newInterestRate);
+    }
+
+
+
+
 }
