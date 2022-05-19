@@ -18,6 +18,7 @@ public class AccountHolderController implements AccountHolderControllerInterface
     @PostMapping("/accountHolders")
     @ResponseStatus(HttpStatus.CREATED)
     public AccountHolder saveAccountHolder(@RequestBody AccountHolder accountHolder){
+        System.out.println(accountHolder);
         return accountHolderServiceInterface.addAccountHolder(accountHolder);
     }
 
@@ -38,5 +39,6 @@ public class AccountHolderController implements AccountHolderControllerInterface
     public void deleteAccountHolder(@PathVariable(name = "id") Long id){
         accountHolderServiceInterface.deleteAccountHolder(id);
     }
+
 
 }

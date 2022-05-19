@@ -65,24 +65,6 @@ public class OpenbankProjectApplication {
                         null,
                         "dfsgdfg@gmail.com"
                 ));
-            /*    checkingService.addChecking(new Checking(
-                        LocalDate.now(),
-                        new Money(),
-                        new AccountHolder(
-                                "bill",
-                                "bill" ,
-                                "1234",
-                                null,
-                                LocalDate.now(),
-                                null,
-                                "dfsgdfg@gmail.com"),
-                        null,
-                        new Money(),
-                        "1234",
-                        ACTIVE
-
-                ));
-*/
             };
         }
 

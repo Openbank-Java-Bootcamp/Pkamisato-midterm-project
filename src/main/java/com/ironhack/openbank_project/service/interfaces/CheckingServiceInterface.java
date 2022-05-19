@@ -13,5 +13,5 @@ public interface CheckingServiceInterface {
 
     void deleteChecking(Long id);
 
-    Money getActualBalance(Long id);
+    Money getBalance(Long id);
 }

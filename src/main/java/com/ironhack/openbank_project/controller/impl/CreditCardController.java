@@ -41,6 +41,13 @@ public class CreditCardController implements CreditCardControllerInterface{
         creditCardServicesInterface.deleteCreditCard(id);
     }
 
+    @GetMapping("/creditCardAccounts/balance/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public String getActualBalance(@PathVariable (name = "id") Long id){
+        Money actualBalance = creditCardServicesInterface.getBalance(id);
+        return (" Actual Balance: "+ actualBalance);
+    }
+
     @PatchMapping("/creditCardAccounts/creditLimit/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Money updateCreditLimit(@PathVariable (name = "id") Long id,@RequestBody Money newCreditLimit){

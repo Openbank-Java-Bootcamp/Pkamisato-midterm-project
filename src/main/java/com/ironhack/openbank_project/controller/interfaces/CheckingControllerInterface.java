@@ -15,6 +15,6 @@ public interface CheckingControllerInterface {
 
     void deleteCheckingAccount(Long id);
 
-    Money getActualBalance(Long id);
+    String getActualBalance(Long id);
 
 }

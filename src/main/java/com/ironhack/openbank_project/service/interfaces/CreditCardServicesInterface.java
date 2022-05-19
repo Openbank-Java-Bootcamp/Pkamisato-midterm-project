@@ -11,7 +11,7 @@ public interface CreditCardServicesInterface {
     CreditCard getCreditCardById(Long id);
     CreditCard updateCreditCard(Long id, CreditCard creditCard);
     void deleteCreditCard(Long id);
-
+    Money getBalance(Long id);
     Money updateCreditLimit(Long id, Money newCreditLimit);
 
     BigDecimal updateInterestRate(Long id, BigDecimal newInterestRate);

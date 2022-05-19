@@ -35,7 +35,7 @@ public class CreditCardService implements CreditCardServicesInterface {
         creditCardRepository.delete(foundCreditCard.get());
     }
 
-    public Money getActualBalance(Long id){
+    public Money getBalance(Long id){
         Optional<CreditCard> creditCardFromDb = creditCardRepository.findById((id));
         if(creditCardFromDb.isEmpty()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Credit card Account found with ID:"+ id);

@@ -45,8 +45,9 @@ public class CheckingController implements CheckingControllerInterface {
 
     @GetMapping("/checkingAccounts/balance/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Money getActualBalance(@PathVariable (name = "id") Long id){
-        return checkingServiceInterface.getActualBalance(id);
+    public String getActualBalance(@PathVariable (name = "id") Long id){
+        Money actualBalance = checkingServiceInterface.getBalance(id);
+        return (" Actual Balance: "+ actualBalance);
     }
 
 

@@ -4,7 +4,9 @@ import com.ironhack.openbank_project.model.AccountHolder;
 import com.ironhack.openbank_project.repository.AccountHolderRepository;
 import com.ironhack.openbank_project.service.interfaces.AccountHolderServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -16,7 +18,6 @@ public class AccountHolderService implements AccountHolderServiceInterface {
 
 
     public AccountHolder addAccountHolder (AccountHolder accountHolder){
-        System.out.println(accountHolder.getRoles());
         return accountHolderRepository.save(accountHolder);
     }
 
@@ -32,7 +33,12 @@ public class AccountHolderService implements AccountHolderServiceInterface {
 
     public void deleteAccountHolder(Long id){
         Optional<AccountHolder> foundAccountHolder= accountHolderRepository.findById(id);
+        if(foundAccountHolder.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Account Holder found with ID:"+ id);
+        }else{
         accountHolderRepository.delete(foundAccountHolder.get());
+        }
     }
+
 
 }
