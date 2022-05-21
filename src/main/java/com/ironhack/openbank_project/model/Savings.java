@@ -78,7 +78,7 @@ public class Savings extends Account{
 
     public void addInterestRate(){
         LocalDate actualDate = LocalDate.now();
-        Period period = Period.between(actualDate, getCreationDate());
+        Period period = Period.between( getCreationDate(), actualDate);
         int years = period.getYears(); // number of years that have passed since the creation of the account
         // how many times interest rate has been paid
         int paidCounter = years - interestRateCounter;

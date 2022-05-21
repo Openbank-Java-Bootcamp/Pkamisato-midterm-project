@@ -28,19 +28,13 @@ public class SavingsController implements SavingsControllerInterface {
        return savingsServiceInterface.getSavingsById(id);
    }
 
-   @PutMapping("/savingsAccounts/{id}")
-   @ResponseStatus(HttpStatus.NO_CONTENT)
-   public Savings updateSavingsAccount(@PathVariable (name = "id") Long id,@RequestBody Savings savings ){
-       return savingsServiceInterface.updateSavings(id, savings);
-   }
-
    @DeleteMapping("/savingsAccounts/{id}")
    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSavingsAccount(Long id){
        savingsServiceInterface.deleteSavings(id);
    }
 
-   @GetMapping("/savingsAccounts/balance/{id}")
+   @GetMapping("/savingsAccounts/{id}/balance")
    @ResponseStatus(HttpStatus.OK)
    public Money getActualBalance(@PathVariable (name = "id") Long id){
         return savingsServiceInterface.getActualBalance(id);

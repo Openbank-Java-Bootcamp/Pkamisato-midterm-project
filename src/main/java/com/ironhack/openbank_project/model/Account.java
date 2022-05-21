@@ -55,7 +55,7 @@ public class Account {
     })
     private Money penaltyFee;
     private static final Money DEFAULT_PENALTY_FEE = new Money(new BigDecimal(40), Currency.getInstance("EUR"));
-    private static final LocalDate DEFAULT_CREATION_DATE = LocalDate.now();
+    private static final LocalDate DEFAULT_CREATION_DATE = LocalDate.of(2021,01,01);
 
     public Account(String secretKey, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner ) {
         this.secretKey = secretKey;

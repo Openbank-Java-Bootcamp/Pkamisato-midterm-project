@@ -9,8 +9,6 @@ public interface CheckingServiceInterface {
     Account addChecking(NewCheckingDTO newCheckingDTO);
     Checking getCheckingById(Long id);
 
-    Checking updateChecking(Long id, Checking checking);
-
     void deleteChecking(Long id);
 
     Money getBalance(Long id);

@@ -39,7 +39,7 @@ public class OpenbankProjectApplication {
         }
 
         @Bean
-        CommandLineRunner run (UserService userService, RoleService roleService, AccountHolderService accountHolderService){
+        CommandLineRunner run (UserService userService, RoleService roleService, AccountHolderService accountHolderService, CheckingService checkingService){
             return args -> {
 
                 roleService.saveRole(new Role(null, "ROLE_ACCOUNT_HOLDER"));
@@ -59,6 +59,9 @@ public class OpenbankProjectApplication {
 
                 userService.saveUser(new AccountHolder("bill","bill" ,"1234",null,LocalDate.now(),null,"dfsgdfg@gmail.com"));
                 userService.saveUser(new AccountHolder("mitu","mitu" ,"1234",null, LocalDate.of(1992,01,02),null,"p1111@gmail.com"));
+
+
+
             };
         }
 

@@ -62,12 +62,6 @@ public class CheckingService implements CheckingServiceInterface {
         return checkingRepository.findById(id).get();
     }
 
-    public Checking updateChecking(Long id, Checking checking){
-        Checking checkingFromDB = checkingRepository.findById(id).get();
-        checking.setId(checkingFromDB.getId());
-        return checkingRepository.save(checking);
-    }
-
     public void deleteChecking(Long id){
         Optional<Checking> foundChecking = checkingRepository.findById(id);
         checkingRepository.delete(foundChecking.get());
@@ -79,6 +73,7 @@ public class CheckingService implements CheckingServiceInterface {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Checking Account found with ID:"+ id);
         }else{
             checkingFromDb.get().deductMonthlyMaintenanceFee();
+            checkingRepository.save(checkingFromDb.get());
             return checkingFromDb.get().getBalance();
         }
     }

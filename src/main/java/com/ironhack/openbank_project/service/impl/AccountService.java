@@ -23,51 +23,67 @@ public class AccountService implements AccountServiceInterface {
     AccountRepository accountRepository;
 
 
-
-
-    public void sendTransfer(Long senderAccountId, TransferDTO transferDTO){
+    public void sendTransfer(Long senderAccountId, TransferDTO transferDTO) {
         //get the logged user
         String usernameSender;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
-            usernameSender = ((UserDetails)principal).getUsername();
+            usernameSender = ((UserDetails) principal).getUsername();
         } else {
             usernameSender = principal.toString();
-            System.out.println("---->"+usernameSender);
         }
         //validation logged user = owner
         String primaryOwnerName = accountRepository.findById(senderAccountId).get().getPrimaryOwner().getUsername();
         String secondaryOwnerName = null;
-        if(accountRepository.findById(senderAccountId).get().getSecondaryOwner() != null){
-            secondaryOwnerName= accountRepository.findById(senderAccountId).get().getSecondaryOwner().getUsername();
+        if (accountRepository.findById(senderAccountId).get().getSecondaryOwner() != null) {
+            secondaryOwnerName = accountRepository.findById(senderAccountId).get().getSecondaryOwner().getUsername();
         }
-        if(primaryOwnerName.equals(usernameSender) || ( secondaryOwnerName != null && secondaryOwnerName.equals(usernameSender))){
+        if (primaryOwnerName.equals(usernameSender) || (secondaryOwnerName != null && secondaryOwnerName.equals(usernameSender))) {
             //transfer
             accountRepository.findById(senderAccountId).get().receiveTransfer(transferDTO.getTransferAmount());
             accountRepository.findById(transferDTO.getRecipientAccountId()).get().sendTransfer(transferDTO.getTransferAmount());
 
             accountRepository.save(accountRepository.findById(senderAccountId).get());
             accountRepository.save(accountRepository.findById(transferDTO.getRecipientAccountId()).get());
-        }else{
+        } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You do not have authorization to perform this transaction");
         }
     }
 
-    public Money getBalance(Long id){
-        Optional<Account> accountFromDb= accountRepository.findById(id);
-        if(accountFromDb .isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Account found with ID:"+ accountFromDb);
-        }else{
-            return accountFromDb.get().getBalance();
+    public Money getBalance(Long id) {
+        //get the logged user
+        String username;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        //validation logged user = owner
+        String primaryOwnerName = accountRepository.findById(id).get().getPrimaryOwner().getUsername();
+        String secondaryOwnerName = null;
+        if (accountRepository.findById(id).get().getSecondaryOwner() != null) {
+            secondaryOwnerName = accountRepository.findById(id).get().getSecondaryOwner().getUsername();
+        }
+        if (primaryOwnerName.equals(username) || (secondaryOwnerName != null && secondaryOwnerName.equals(username))) {
+            Optional<Account> accountFromDb = accountRepository.findById(id);
+            if (accountFromDb.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Account found with ID:" + accountFromDb);
+            } else {
+                Money actualBalance = accountFromDb.get().getBalance();
+                return actualBalance;
+            }
+        }else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Access denied");
         }
     }
 
     @Override
     public void updateBalance(Long id, Money newBalance) {
-        Optional<Account> accountFromDb= accountRepository.findById(id);
-        if(accountFromDb .isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Account found with ID:"+ accountFromDb);
-        }else{
+        Optional<Account> accountFromDb = accountRepository.findById(id);
+        if (accountFromDb.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Account found with ID:" + accountFromDb);
+        } else {
             accountFromDb.get().setBalance(newBalance);
             accountRepository.save(accountFromDb.get());
         }

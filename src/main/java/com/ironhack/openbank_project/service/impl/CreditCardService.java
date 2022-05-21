@@ -51,6 +51,7 @@ public class CreditCardService implements CreditCardServicesInterface {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Credit card Account found with ID:"+ id);
     }else{
             creditCardFromDb.get().setCreditLimit(newCreditLimit);
+            creditCardRepository.save(creditCardFromDb.get());
             return creditCardFromDb.get().getCreditLimit();
         }
     }
@@ -61,6 +62,7 @@ public class CreditCardService implements CreditCardServicesInterface {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Credit card Account found with ID:"+ id);
     }else{
             creditCardFromDb.get().setInterestRate(newInterestRate);
+            creditCardRepository.save(creditCardFromDb.get());
             return creditCardFromDb.get().getInterestRate();
         }
     }

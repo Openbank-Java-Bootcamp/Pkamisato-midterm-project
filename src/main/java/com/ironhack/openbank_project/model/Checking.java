@@ -53,8 +53,9 @@ public class Checking extends Account{
     }
 
     public void deductMonthlyMaintenanceFee(){
-        Period period = Period.between(LocalDate.now(), getCreationDate());
-        int months = period.getMonths(); // number of months that have passed since the creation of the account
+        Period period = Period.between(getCreationDate(),LocalDate.now());
+        int years = period.getYears();
+        int months = period.getMonths() + years * 12; // number of months that have passed since the creation of the account
         // how many times maintenance fee has been paid
         int notPaidCounter = months - getMaintenanceFeeCounter();
         if(notPaidCounter != 0){

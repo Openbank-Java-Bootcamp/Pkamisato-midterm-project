@@ -23,11 +23,7 @@ public class SavingsService implements SavingsServiceInterface {
     public Savings getSavingsById(Long id){
         return savingsRepository.findById(id).get();
     }
-    public Savings updateSavings(Long id, Savings savings ){
-        Optional<Savings> savingsFromDb = savingsRepository.findById(id);
-        savings.setId(savingsFromDb.get().getId());
-        return savingsRepository.save(savings);
-    }
+
     public void deleteSavings(Long id){
         Optional<Savings> foundSavings = savingsRepository.findById(id);
         savingsRepository.delete(foundSavings.get());
@@ -40,6 +36,7 @@ public class SavingsService implements SavingsServiceInterface {
         }else{
             savingsFromDb.get().addInterestRate();
             savingsFromDb.get().applyPenaltyFee();
+            savingsRepository.save(savingsFromDb.get());
             return savingsFromDb.get().getBalance();
         }
     }

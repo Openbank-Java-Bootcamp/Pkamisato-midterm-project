@@ -31,19 +31,13 @@ public class CheckingController implements CheckingControllerInterface {
         return checkingServiceInterface.getCheckingById(id);
     }
 
-    @PutMapping("/checkingAccounts/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Checking updateCheckingAccount(@PathVariable (name = "id") Long id, @RequestBody Checking checking){
-        return  checkingServiceInterface.updateChecking(id,checking);
-    }
-
     @DeleteMapping("/checkingAccounts/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCheckingAccount(@PathVariable (name = "id") Long id) {
         checkingServiceInterface.deleteChecking(id);
     }
 
-    @GetMapping("/checkingAccounts/balance/{id}")
+    @GetMapping("/checkingAccounts/{id}/balance")
     @ResponseStatus(HttpStatus.OK)
     public String getActualBalance(@PathVariable (name = "id") Long id){
         Money actualBalance = checkingServiceInterface.getBalance(id);

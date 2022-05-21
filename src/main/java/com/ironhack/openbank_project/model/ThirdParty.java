@@ -17,19 +17,29 @@ import java.security.NoSuchAlgorithmException;
 public class ThirdParty{
 
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
     private String name;
     @NotNull
     private byte[] hashedKey;
-    public ThirdParty(String name, String message) throws NoSuchAlgorithmException {
-        this.name = name;
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] encodedHashKey = digest.digest(
-                message.getBytes(StandardCharsets.UTF_8));
-        this.hashedKey = encodedHashKey;
 
+    public ThirdParty(String name, String message) {
+        this.name = name;
+        this.hashedKey = getEncodedHashKey(message);
+    }
+
+    private byte[] getEncodedHashKey(String message) {
+        MessageDigest digest = null;
+        byte[] encodedHashKey = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+            encodedHashKey = digest.digest(message.getBytes(StandardCharsets.UTF_8));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        return encodedHashKey;
     }
 
 }

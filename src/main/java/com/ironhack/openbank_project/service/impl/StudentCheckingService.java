@@ -20,11 +20,7 @@ public class StudentCheckingService implements StudentCheckingServiceInterface {
     public StudentChecking getStudentChecking(Long id){
         return studentCheckingRepository.findById(id).get();
     }
-    public StudentChecking updateStudentChecking(Long id, StudentChecking studentChecking){
-        Optional<StudentChecking> studentCheckingFromDb = studentCheckingRepository.findById(id);
-        studentChecking.setId(studentCheckingFromDb.get().getId());
-        return studentCheckingRepository.save(studentChecking);
-    }
+
     public void deleteStudentChecking(Long id){
         Optional<StudentChecking> foundStudentChecking = studentCheckingRepository.findById(id);
         studentCheckingRepository.delete(foundStudentChecking.get());

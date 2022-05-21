@@ -41,20 +41,20 @@ public class CreditCardController implements CreditCardControllerInterface{
         creditCardServicesInterface.deleteCreditCard(id);
     }
 
-    @GetMapping("/creditCardAccounts/balance/{id}")
+    @GetMapping("/creditCardAccounts/{id}/balance")
     @ResponseStatus(HttpStatus.OK)
     public String getActualBalance(@PathVariable (name = "id") Long id){
         Money actualBalance = creditCardServicesInterface.getBalance(id);
         return (" Actual Balance: "+ actualBalance);
     }
 
-    @PatchMapping("/creditCardAccounts/creditLimit/{id}")
+    @PatchMapping("/creditCardAccounts/{id}/creditLimit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Money updateCreditLimit(@PathVariable (name = "id") Long id,@RequestBody Money newCreditLimit){
         return creditCardServicesInterface.updateCreditLimit(id,newCreditLimit);
     }
 
-    @PatchMapping("/creditCardAccounts/interestRate/{id}")
+    @PatchMapping("/creditCardAccounts/{id}/interestRate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public BigDecimal updateInterestRate(@PathVariable (name = "id") Long id,@RequestBody BigDecimal newInterestRate){
         return creditCardServicesInterface.updateInterestRate(id, newInterestRate);

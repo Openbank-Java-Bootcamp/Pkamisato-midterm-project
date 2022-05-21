@@ -22,11 +22,7 @@ public class StudentCheckingController implements StudentCheckingControllerInter
     public StudentChecking getStudentAccount(@PathVariable Long id){
         return studentCheckingServiceInterface.getStudentChecking(id);
     }
-    @PutMapping("/studentsAccounts/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public StudentChecking updateStudentAccount(@PathVariable Long id, @RequestBody StudentChecking studentChecking){
-       return studentCheckingServiceInterface.updateStudentChecking(id,studentChecking);
-    }
+
     @DeleteMapping("/studentsAccounts/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteStudentAccount(@PathVariable Long id){
