@@ -4,6 +4,7 @@ package com.ironhack.openbank_project.model;
 import com.ironhack.openbank_project.enums.Status;
 import com.ironhack.openbank_project.utils.Money;
 import com.sun.istack.NotNull;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;

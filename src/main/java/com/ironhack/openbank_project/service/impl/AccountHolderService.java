@@ -1,32 +1,59 @@
 package com.ironhack.openbank_project.service.impl;
 
+import com.ironhack.openbank_project.model.Account;
 import com.ironhack.openbank_project.model.AccountHolder;
+import com.ironhack.openbank_project.model.User;
 import com.ironhack.openbank_project.repository.AccountHolderRepository;
+import com.ironhack.openbank_project.repository.RoleRepository;
 import com.ironhack.openbank_project.service.interfaces.AccountHolderServiceInterface;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j //help log in
 public class AccountHolderService implements AccountHolderServiceInterface {
 
     @Autowired
     AccountHolderRepository accountHolderRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public AccountHolder addAccountHolder (AccountHolder accountHolder){
+    @Autowired
+    private RoleRepository roleRepository;
+
+
+    public AccountHolder addAccountHolder(AccountHolder accountHolder){
+        log.info("Saving a new AccountHolder {} inside of the database",accountHolder.getName());
+        accountHolder.setPassword(passwordEncoder.encode(accountHolder.getPassword()));
         return accountHolderRepository.save(accountHolder);
+    }
+    public List<AccountHolder> getAccountHolders(){
+        log.info("Fetching all users");
+        return accountHolderRepository.findAll();
     }
 
     public AccountHolder getAccountHolderById(Long id) {
-        return accountHolderRepository.findById(id).get();
+        return (AccountHolder) accountHolderRepository.findById(id).get();
     }
 
     public AccountHolder updateAccountHolder(Long id, AccountHolder accountHolder){
-        AccountHolder accountHolderFromDB = accountHolderRepository.findById(id).get();
+        AccountHolder accountHolderFromDB = (AccountHolder) accountHolderRepository.findById(id).get();
         accountHolder.setId(accountHolderFromDB.getId());
         return accountHolderRepository.save(accountHolder);
     }
@@ -40,5 +67,26 @@ public class AccountHolderService implements AccountHolderServiceInterface {
         }
     }
 
+   public List<Account> getAccountList(Long id){
+        //get logged user name
+       String loggedUsername;
+       Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       if (principal instanceof UserDetails) {
+            loggedUsername = ((UserDetails)principal).getUsername();
+       } else {
+            loggedUsername = principal.toString();
+       }
+       Optional<AccountHolder> accountHolderFromDb = accountHolderRepository.findById(id);
+       if(accountHolderFromDb.isEmpty()){
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No AccountHolder found with ID:"+ id);
+       }else{
+           if(accountHolderFromDb.get().getUsername() != loggedUsername){
+               throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No AccountHolder found with ID:"+ id);
+           }else{
+               List<Account>loggedUserAccounts = accountHolderFromDb.get().getAccountList();
+               return loggedUserAccounts;
+           }
+       }
+   }
 
 }

@@ -24,4 +24,6 @@ public class ThirdPartyController {
     public void deleteThirdParty(Long id){
         thirdPartyServiceInterface.deleteThirdParty(id);
     }
+
+
 }

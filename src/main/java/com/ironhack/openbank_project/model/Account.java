@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,7 +19,7 @@ import java.util.Currency;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class Account {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,16 +67,21 @@ public abstract class Account {
     }
 
 
-    public void sendTransfer(Money transferAmount) {
+    public String sendTransfer(Money transferAmount) {
         if (balance.getAmount().compareTo(transferAmount.getAmount()) >= 0) {
             BigDecimal newBalanceAmount = balance.getAmount().subtract(transferAmount.getAmount());
             Money newBalance = new Money(newBalanceAmount, Currency.getInstance("EUR"));
+            this.setBalance(newBalance);
+            return ("Actual Balance: "+ newBalance);
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You do not have enough balance to make transfers");
         }
     }
 
     public void receiveTransfer(Money transferAmount) {
         BigDecimal newBalanceAmount = balance.getAmount().add(transferAmount.getAmount());
         Money newBalance = new Money(newBalanceAmount, Currency.getInstance("EUR"));
+        this.setBalance(newBalance);
     }
 
 

@@ -1,8 +1,8 @@
 package com.ironhack.openbank_project.service.impl;
 
+import com.ironhack.openbank_project.DTO.TransferDTO;
 import com.ironhack.openbank_project.model.Account;
-import com.ironhack.openbank_project.model.AccountHolder;
-import com.ironhack.openbank_project.model.User;
+
 import com.ironhack.openbank_project.repository.AccountRepository;
 import com.ironhack.openbank_project.repository.UserRepository;
 import com.ironhack.openbank_project.service.interfaces.AccountServiceInterface;
@@ -21,25 +21,35 @@ public class AccountService implements AccountServiceInterface {
 
     @Autowired
     AccountRepository accountRepository;
-    @Autowired
-    UserRepository userRepository;
 
 
-    public void sendTransfer(Long senderAccountId,Money transferAmount, Long recipientAccountId){
-        Optional<Account> accountRecipientId = accountRepository.findById(recipientAccountId);
-        if(accountRecipientId .isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Account found with ID:"+ accountRecipientId);
+
+
+    public void sendTransfer(Long senderAccountId, TransferDTO transferDTO){
+        //get the logged user
+        String usernameSender;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            usernameSender = ((UserDetails)principal).getUsername();
+        } else {
+            usernameSender = principal.toString();
+            System.out.println("---->"+usernameSender);
+        }
+        //validation logged user = owner
+        String primaryOwnerName = accountRepository.findById(senderAccountId).get().getPrimaryOwner().getUsername();
+        String secondaryOwnerName = null;
+        if(accountRepository.findById(senderAccountId).get().getSecondaryOwner() != null){
+            secondaryOwnerName= accountRepository.findById(senderAccountId).get().getSecondaryOwner().getUsername();
+        }
+        if(primaryOwnerName.equals(usernameSender) || ( secondaryOwnerName != null && secondaryOwnerName.equals(usernameSender))){
+            //transfer
+            accountRepository.findById(senderAccountId).get().receiveTransfer(transferDTO.getTransferAmount());
+            accountRepository.findById(transferDTO.getRecipientAccountId()).get().sendTransfer(transferDTO.getTransferAmount());
+
+            accountRepository.save(accountRepository.findById(senderAccountId).get());
+            accountRepository.save(accountRepository.findById(transferDTO.getRecipientAccountId()).get());
         }else{
-            accountRecipientId.get().receiveTransfer(transferAmount);
-            String usernameSender;
-            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (principal instanceof UserDetails) {
-                usernameSender = ((UserDetails)principal).getUsername();
-            } else {
-                usernameSender = principal.toString();
-            }
-            User userSender = userRepository.findByUsername(usernameSender);
-            accountRepository.findByPrimaryOwner((AccountHolder) userSender).sendTransfer(transferAmount);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You do not have authorization to perform this transaction");
         }
     }
 
@@ -59,6 +69,7 @@ public class AccountService implements AccountServiceInterface {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Account found with ID:"+ accountFromDb);
         }else{
             accountFromDb.get().setBalance(newBalance);
+            accountRepository.save(accountFromDb.get());
         }
     }
 }

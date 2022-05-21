@@ -15,6 +15,7 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class User {
 
     @Id
