@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api")
 public class SavingsController implements SavingsControllerInterface {
@@ -40,8 +42,17 @@ public class SavingsController implements SavingsControllerInterface {
         return savingsServiceInterface.getActualBalance(id);
    }
 
+   @PatchMapping("/savingsAccounts/{id}")
+   @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateMinimumBalance(@PathVariable(name = "id") Long id,@RequestBody Money newMinimBalance){
+       savingsServiceInterface.setMinimumBalance(id,newMinimBalance);
+   }
 
-
+    @PatchMapping("/savingsAccounts/{id}/interest_rate")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public BigDecimal updateInterestRate(@PathVariable (name = "id") Long id, @RequestBody BigDecimal newInterestRate){
+        return savingsServiceInterface.setInterestRate(id, newInterestRate);
+    }
 
 
 

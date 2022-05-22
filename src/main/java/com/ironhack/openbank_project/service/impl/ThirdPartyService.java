@@ -50,4 +50,17 @@ public class ThirdPartyService implements ThirdPartyServiceInterface {
         }
     }
 
+   public void receiveTransferFromAccount(byte[] hashedKey, TransferThirdPartyDTO transferThirdPartyDTO){
+        Optional<Account> accountFromDB = accountRepository.findById(transferThirdPartyDTO.getAccountId());
+        if(accountFromDB.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Account found with ID:" + transferThirdPartyDTO.getAccountId());
+        }else{
+            if(accountFromDB.get().getSecretKey().equals(transferThirdPartyDTO.getSecretKey())){
+                accountRepository.findById((transferThirdPartyDTO.getAccountId())).get().sendTransfer(transferThirdPartyDTO.getAmount());
+                accountRepository.save(accountRepository.findById((transferThirdPartyDTO.getAccountId())).get());
+            }else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong secretKey");
+            }
+        }
+    }
 }

@@ -18,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -43,19 +46,41 @@ public class AccountHolderService implements AccountHolderServiceInterface {
         accountHolder.setPassword(passwordEncoder.encode(accountHolder.getPassword()));
         return accountHolderRepository.save(accountHolder);
     }
-    public List<AccountHolder> getAccountHolders(){
-        log.info("Fetching all users");
-        return accountHolderRepository.findAll();
-    }
 
     public AccountHolder getAccountHolderById(Long id) {
-        return (AccountHolder) accountHolderRepository.findById(id).get();
+        Optional<AccountHolder> accountHolderFromDB = accountHolderRepository.findById(id);
+        if(accountHolderFromDB.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Account Holder found with ID:"+ id);
+        }else{
+            return accountHolderFromDB.get();
+        }
     }
 
     public AccountHolder updateAccountHolder(Long id, AccountHolder accountHolder){
-        AccountHolder accountHolderFromDB = (AccountHolder) accountHolderRepository.findById(id).get();
-        accountHolder.setId(accountHolderFromDB.getId());
+        Optional<AccountHolder> accountHolderFromDB = accountHolderRepository.findById(id);
+        if(accountHolderFromDB.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Account Holder found with ID:"+ id);
+        }else{
+            if (accountHolder.getName() != null) {
+                accountHolderFromDB.get().setName(accountHolder.getName());
+            }
+            if (accountHolder.getUsername() != null) {
+                accountHolderFromDB.get().setUsername(accountHolder.getUsername());
+            }
+            accountHolderFromDB.get().setRoles(accountHolder.getRoles());
+            if (accountHolder.getDateOfBirth() != null) {
+                accountHolderFromDB.get().setDateOfBirth(accountHolder.getDateOfBirth());
+                }else{
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong date format.");
+                }
+            if (accountHolder.getAddress() != null){
+                accountHolderFromDB.get().setAddress(accountHolder.getAddress());
+               }
+            if (accountHolder.getMailingAddress() !=null){
+                accountHolderFromDB.get().setMailingAddress(accountHolder.getMailingAddress());
+            }
         return accountHolderRepository.save(accountHolder);
+        }
     }
 
     public void deleteAccountHolder(Long id){

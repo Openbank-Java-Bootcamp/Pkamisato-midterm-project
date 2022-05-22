@@ -25,14 +25,14 @@ public class CreditCardService implements CreditCardServicesInterface {
     public CreditCard getCreditCardById(Long id){
         return creditCardRepository.getReferenceById(id);
     }
-    public CreditCard updateCreditCard(Long id, CreditCard creditCard){
-        CreditCard creditCardFromDb = creditCardRepository.findById(id).get();
-        creditCard.setId(creditCardFromDb.getId());
-        return creditCardRepository.save(creditCard);
-    }
+
     public void deleteCreditCard(Long id){
         Optional<CreditCard> foundCreditCard = creditCardRepository.findById(id);
+        if(foundCreditCard.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Credit card Account found with ID:"+ id);
+        }else{
         creditCardRepository.delete(foundCreditCard.get());
+        }
     }
 
     public Money getBalance(Long id){

@@ -9,7 +9,6 @@ public interface CreditCardServicesInterface {
 
     CreditCard addCreditCard(CreditCard creditCard);
     CreditCard getCreditCardById(Long id);
-    CreditCard updateCreditCard(Long id, CreditCard creditCard);
     void deleteCreditCard(Long id);
     Money getBalance(Long id);
     Money updateCreditLimit(Long id, Money newCreditLimit);

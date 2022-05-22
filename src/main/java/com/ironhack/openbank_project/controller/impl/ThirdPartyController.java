@@ -2,6 +2,7 @@ package com.ironhack.openbank_project.controller.impl;
 
 import com.ironhack.openbank_project.DTO.ThirdPartyDTO;
 import com.ironhack.openbank_project.DTO.TransferThirdPartyDTO;
+import com.ironhack.openbank_project.controller.interfaces.ThirdPartyControllerInterface;
 import com.ironhack.openbank_project.model.ThirdParty;
 import com.ironhack.openbank_project.service.interfaces.ThirdPartyServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-public class ThirdPartyController {
+public class ThirdPartyController implements ThirdPartyControllerInterface {
 
     @Autowired
     ThirdPartyServiceInterface thirdPartyServiceInterface;
@@ -28,10 +29,16 @@ public class ThirdPartyController {
         thirdPartyServiceInterface.deleteThirdParty(id);
     }
 
-    @PatchMapping("/thirdParties/{hashedKey}")
+    @PatchMapping("/thirdParties/{hashedKey}/send_transfer")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void sendTransfer(@PathVariable(name = "hashedKey") byte[] hashedKey, @RequestBody TransferThirdPartyDTO transferThirdPartyDTO){
         thirdPartyServiceInterface.sendTransferToAccount(hashedKey,transferThirdPartyDTO);
+    }
+
+    @PatchMapping("/thirdParties/{hashedKey}/receive_transfer")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void receiveTransfer(@PathVariable(name = "hashedKey") byte[] hashedKey, @RequestBody TransferThirdPartyDTO transferThirdPartyDTO){
+        thirdPartyServiceInterface.receiveTransferFromAccount(hashedKey,transferThirdPartyDTO);
     }
 
 }

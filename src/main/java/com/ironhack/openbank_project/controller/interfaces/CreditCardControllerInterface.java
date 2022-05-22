@@ -12,7 +12,6 @@ public interface CreditCardControllerInterface {
 
     CreditCard getCreditCardAccountById(Long id);
 
-    CreditCard updateCreditCardAccount(Long id, CreditCard creditCard);
 
     void deleteCreditCardAccount(Long id);
 

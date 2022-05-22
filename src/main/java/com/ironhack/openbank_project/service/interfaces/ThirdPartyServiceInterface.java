@@ -10,4 +10,6 @@ public interface ThirdPartyServiceInterface {
     void deleteThirdParty(Long id);
 
     void sendTransferToAccount(byte[] hashedKey, TransferThirdPartyDTO transferThirdPartyDTO);
+
+    void receiveTransferFromAccount(byte[] hashedKey, TransferThirdPartyDTO transferThirdPartyDTO);
 }

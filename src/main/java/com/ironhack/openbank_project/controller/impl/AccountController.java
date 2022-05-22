@@ -28,7 +28,7 @@ public class AccountController implements AccountControllerInterface {
     @ResponseStatus(HttpStatus.OK)
     public String getActualBalance(@PathVariable (name = "id") Long id){
         Money actualBalance = accountServiceInterface.getBalance(id);
-        return (" Actual Balance: "+ actualBalance);
+        return (" Current Balance: "+ actualBalance);
     }
 
     @PatchMapping("/accounts/{id}/balance")
@@ -36,5 +36,6 @@ public class AccountController implements AccountControllerInterface {
     public void updateActualBalance(@PathVariable (name = "id") Long id,@RequestBody Money newBalance){
        accountServiceInterface.updateBalance(id,newBalance);
     }
+
 
 }

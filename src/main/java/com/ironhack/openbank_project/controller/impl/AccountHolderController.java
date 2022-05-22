@@ -4,6 +4,7 @@ import com.ironhack.openbank_project.controller.interfaces.AccountHolderControll
 import com.ironhack.openbank_project.model.Account;
 import com.ironhack.openbank_project.model.AccountHolder;
 import com.ironhack.openbank_project.service.interfaces.AccountHolderServiceInterface;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class AccountHolderController implements AccountHolderControllerInterface
 
     @PostMapping("/accountHolders")
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountHolder saveAccountHolder(@RequestBody AccountHolder accountHolder){
+    public AccountHolder saveAccountHolder(@RequestBody @Valid AccountHolder accountHolder){
         System.out.println(accountHolder);
         return accountHolderServiceInterface.addAccountHolder(accountHolder);
     }
@@ -33,7 +34,7 @@ public class AccountHolderController implements AccountHolderControllerInterface
 
     @PutMapping("/accountHolders/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public AccountHolder updateAccountHolder(@PathVariable(name = "id") Long id,@RequestBody AccountHolder accountHolder){
+    public AccountHolder updateAccountHolder(@PathVariable(name = "id") Long id,@RequestBody @Valid AccountHolder accountHolder){
         return accountHolderServiceInterface.updateAccountHolder(id, accountHolder);
     }
 
@@ -48,4 +49,6 @@ public class AccountHolderController implements AccountHolderControllerInterface
     public List<Account> getAccountListById(@PathVariable(name="id") Long id) {
         return accountHolderServiceInterface.getAccountList(id);
     }
+
+
 }

@@ -4,6 +4,7 @@ import com.ironhack.openbank_project.controller.interfaces.CreditCardControllerI
 import com.ironhack.openbank_project.model.CreditCard;
 import com.ironhack.openbank_project.service.interfaces.CreditCardServicesInterface;
 import com.ironhack.openbank_project.utils.Money;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,18 +22,13 @@ public class CreditCardController implements CreditCardControllerInterface{
 
     @PostMapping("/creditCardAccounts")
     @ResponseStatus(HttpStatus.CREATED)
-    public CreditCard addCreditCardAccount(@RequestBody CreditCard creditCard){
+    public CreditCard addCreditCardAccount(@RequestBody @Valid CreditCard creditCard){
         return creditCardServicesInterface.addCreditCard(creditCard);
     }
     @GetMapping("/creditCardAccounts/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CreditCard getCreditCardAccountById(@PathVariable(name = "id") Long id){
         return creditCardServicesInterface.getCreditCardById(id);
-    }
-    @PutMapping("/creditCardAccounts/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public CreditCard updateCreditCardAccount(@PathVariable(name = "id") Long id,@RequestBody CreditCard creditCard){
-        return creditCardServicesInterface.updateCreditCard(id,creditCard);
     }
 
     @DeleteMapping("/creditCardAccounts/{id}")
@@ -48,13 +44,13 @@ public class CreditCardController implements CreditCardControllerInterface{
         return (" Actual Balance: "+ actualBalance);
     }
 
-    @PatchMapping("/creditCardAccounts/{id}/creditLimit")
+    @PatchMapping("/creditCardAccounts/{id}/credit_limit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Money updateCreditLimit(@PathVariable (name = "id") Long id,@RequestBody Money newCreditLimit){
         return creditCardServicesInterface.updateCreditLimit(id,newCreditLimit);
     }
 
-    @PatchMapping("/creditCardAccounts/{id}/interestRate")
+    @PatchMapping("/creditCardAccounts/{id}/interest_rate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public BigDecimal updateInterestRate(@PathVariable (name = "id") Long id,@RequestBody BigDecimal newInterestRate){
         return creditCardServicesInterface.updateInterestRate(id, newInterestRate);

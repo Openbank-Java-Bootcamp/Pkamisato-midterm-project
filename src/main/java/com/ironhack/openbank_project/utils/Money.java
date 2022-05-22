@@ -37,7 +37,7 @@ public class Money {
      * Class constructor specifying amount. Uses default RoundingMode HALF_EVEN and default currency USD.
      **/
     public Money(BigDecimal amount) {
-        this(amount, USD, DEFAULT_ROUNDING);
+        this(amount, EUR, DEFAULT_ROUNDING);
     }
 
     public Money() {

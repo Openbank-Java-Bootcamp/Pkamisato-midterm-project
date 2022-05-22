@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,6 +42,7 @@ public class Account {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "primaryOwner_id")
+    @Column(unique=true)
     private AccountHolder primaryOwner;
 
     @ManyToOne
@@ -72,7 +74,7 @@ public class Account {
             BigDecimal newBalanceAmount = balance.getAmount().subtract(transferAmount.getAmount());
             Money newBalance = new Money(newBalanceAmount, Currency.getInstance("EUR"));
             this.setBalance(newBalance);
-            return ("Actual Balance: "+ newBalance);
+            return ("Current Balance: "+ newBalance);
         }else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You do not have enough balance to make transfers");
         }

@@ -58,13 +58,21 @@ public class CheckingService implements CheckingServiceInterface {
 
     }
 
-    public Checking getCheckingById(Long id) {
+    public Checking getCheckingById(Long id){
+        Optional<Checking> checkingFromDb = checkingRepository.findById(id);
+        if(checkingFromDb.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Checking Account found with ID:"+ id);
+        }else{
         return checkingRepository.findById(id).get();
+        }
     }
-
     public void deleteChecking(Long id){
         Optional<Checking> foundChecking = checkingRepository.findById(id);
+        if(foundChecking.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Checking Account found with ID:"+ id);
+        }else{
         checkingRepository.delete(foundChecking.get());
+        }
     }
 
     public Money getBalance(Long id){
