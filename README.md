@@ -10,6 +10,8 @@ The following diagram explain the operability of the API.
 ### Class diagram:
 ![class diagram](./src/images/class.png)
 
+### DB Model:
+![model](./src/images/model.png)
 ### Technologies Used:
 <ul>
 <li>Java/Spring Boot for API development.</li>

@@ -42,7 +42,6 @@ public class Account {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "primaryOwner_id")
-    @Column(unique=true)
     private AccountHolder primaryOwner;
 
     @ManyToOne
